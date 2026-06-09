@@ -15,7 +15,9 @@ noncomputable section
 
 /-- An invertible real matrix used as a lattice basis for the flat torus metric. -/
 structure LatticeBasis (n : Nat) where
+  /-- The matrix whose columns encode the lattice basis. -/
   matrix : Matrix (Fin n) (Fin n) Real
+  /-- The lattice basis matrix has invertible determinant. -/
   invertible : IsUnit matrix.det
 
 /-- The flat torus with coordinate lattice and metric encoded by `A`. -/
