@@ -1,14 +1,28 @@
 \section{Preliminaries}
 
+\begin{definition}[Hilbert distortion]\label{def:hilbert-distortion}
+\lean{SphereObstructionHilbertShiftQuotient.hilbertDistortion}\notready
 For a metric space $X$, let $c_2(X)$ denote its least bilipschitz distortion
-into Hilbert space, with $c_2(X)=\infty$ if no such embedding exists.  We use the
-standard finite-determination principle
-\begin{equation}\label{eq:finite-determination}
-        c_2(X)=\sup\{c_2(F):F\subset X,\ |F|<\infty\},
-\end{equation}
-which is \cite[Proposition~31]{CahillIversonMixon} and follows from the usual
-Hilbert-ultraproduct argument.
+into Hilbert space, with $c_2(X)=\infty$ if no such embedding exists.
+\end{definition}
 
+\begin{proposition}[Finite determination]\label{prop:finite-determination}
+\lean{SphereObstructionHilbertShiftQuotient.finiteDetermination}\notready
+\uses{def:hilbert-distortion}
+Hilbert distortion is determined by finite subsets:
+\begin{equation}\label{eq:finite-determination}
+        c_2(X)=\sup\{c_2(F):F\subset X,\ |F|<\infty\}.
+\end{equation}
+\end{proposition}
+
+\begin{proof}
+This is \cite[Proposition~31]{CahillIversonMixon} and follows from the usual
+Hilbert-ultraproduct argument.
+\end{proof}
+
+\begin{definition}[Higher-rank sphere quotients]
+\label{def:higher-rank-sphere-quotient}
+\lean{SphereObstructionHilbertShiftQuotient.higherRankSphereQuotient, SphereObstructionHilbertShiftQuotient.higherRankChordalMetric}\notready
 For $n\ge1$, put
 \[
         H_n=\ell^2(\Z^n),
@@ -23,39 +37,78 @@ Unless stated otherwise, $\Sigma_n$ carries the chordal quotient metric
 \[
         d_{\Sigma_n}([f],[g])=\inf_{a\in\Z^n}\norm{f-\tau_a g}_2.
 \]
-The same argument applies in $H_n$: if $\tau_{a_j}f\to g$ and, after passing
-to a subsequence, $a_j\to\infty$ in $\Z^n$, then $\tau_{a_j}f\rightharpoonup0$,
-contradicting $\norm{g}=1$; otherwise the sequence $(a_j)$ has a constant
-subsequence.  Thus translation orbits on $\Sphere(H_n)$ are closed.
-For unit vectors this is equivalently
+\end{definition}
+
+\begin{lemma}\label{lem:higher-rank-orbits-closed}
+\lean{SphereObstructionHilbertShiftQuotient.higherRankTranslationOrbitsClosed}\notready
+\uses{def:higher-rank-sphere-quotient}
+Translation orbits on $\Sphere(H_n)$ are closed.
+\end{lemma}
+
+\begin{proof}
+If $\tau_{a_j}f\to g$ and, after passing to a subsequence, $a_j\to\infty$ in
+$\Z^n$, then $\tau_{a_j}f\rightharpoonup0$, contradicting $\norm{g}=1$.
+Otherwise the sequence $(a_j)$ has a constant subsequence, so the limit lies in
+the original orbit.
+\end{proof}
+
+\begin{lemma}[Correlation formula]\label{lem:sphere-correlation}
+\lean{SphereObstructionHilbertShiftQuotient.higherRankCorrelationFormula}\notready
+\uses{def:higher-rank-sphere-quotient, lem:higher-rank-orbits-closed}
+For unit vectors $f,g\in H_n$,
 \begin{equation}\label{eq:sphere-correlation}
         d_{\Sigma_n}([f],[g])^2
         =2-2\sup_{a\in\Z^n}\ip{f}{\tau_a g}.
 \end{equation}
+\end{lemma}
 
-The only external input is the flat-torus lower bound of Khot--Naor: there
-is a universal constant $c>0$ and, for arbitrarily large $n$, a lattice
+\begin{proof}
+For unit vectors, $\norm{f-\tau_a g}^2=2-2\ip{f}{\tau_a g}$.  Since the
+translation orbits are closed, the quotient pseudometric is a genuine metric,
+and taking the infimum over $a$ gives the displayed formula.
+\end{proof}
+
+\begin{theorem}[Khot--Naor flat-torus lower bound]
+\label{thm:khot-naor-flat-torus}
+\lean{SphereObstructionHilbertShiftQuotient.khotNaorFlatTorusLowerBound}\notready
+\uses{def:hilbert-distortion}
+There is a universal constant $c>0$ and, for arbitrarily large $n$, a lattice
 $L_n\subset\R^n$ such that
 \begin{equation}\label{eq:KN}
         c_2(\R^n/L_n)\ge c\sqrt n .
 \end{equation}
-One may obtain this directly from \cite[Theorem~1.1 and the paragraph following
+\end{theorem}
+
+This may be obtained directly from \cite[Theorem~1.1 and the paragraph following
 it]{HavivRegev}, where the theorem is attributed to Khot--Naor.  In the original
 paper, this is the flat-torus consequence of \cite[Theorem~5.1 and
 Corollary~5.2]{KhotNaor}.
 
+\begin{definition}[Flat tori with unit lattice]\label{def:flat-torus-metric}
+\lean{SphereObstructionHilbertShiftQuotient.flatTorusMetric}\notready
 Given $A\in GL_n(\R)$, write $T_A=\R^n/\Z^n$ with the flat quotient metric
 \begin{equation}\label{eq:rhoA}
         \rho_A(u,v)=\min_{m\in\Z^n}\norm{A(u-v-m)}_2.
 \end{equation}
-Then $T_A$ is isometric to $\R^n/A\Z^n$: if $L=A\Z^n$, the map
-$x+L\mapsto A^{-1}x+\Z^n$ identifies $\R^n/L$ with $T_A$.  Thus the hard
-flat tori supplied by \eqref{eq:KN} may be regarded as tori with the unit
-lattice; the matrix $A$ simply records the flat metric.
+\end{definition}
+
+\begin{lemma}[Unit-lattice model for flat tori]
+\label{lem:flat-torus-unit-lattice-isometry}
+\lean{SphereObstructionHilbertShiftQuotient.flatTorusUnitLatticeIsometry}\notready
+\uses{def:flat-torus-metric}
+The torus $T_A$ is isometric to $\R^n/A\Z^n$.
+\end{lemma}
+
+\begin{proof}
+If $L=A\Z^n$, the map $x+L\mapsto A^{-1}x+\Z^n$ identifies $\R^n/L$ with
+$T_A$.  Thus the hard flat tori supplied by \eqref{eq:KN} may be regarded as
+tori with the unit lattice; the matrix $A$ simply records the flat metric.
+\end{proof}
 
 We shall use the following standard form of Poisson summation.
 
 \begin{lemma}[Uniform summation estimate]\label{lem:summation}
+\lean{SphereObstructionHilbertShiftQuotient.uniformSummationEstimate}\notready
 Let $G\in\mathcal S(\R^n)$.  For every $N\ge1$ there is a constant
 $C_{G,N}<\infty$ such that, for every $R\ge1$ and every $c\in\R^n$,
 \[

@@ -1,6 +1,56 @@
 \section{Flat tori inside higher-rank sphere quotients}
 
+\begin{definition}[Gaussian lattice vectors]\label{def:gaussian-lattice-vectors}
+\lean{SphereObstructionHilbertShiftQuotient.gaussianLatticeVector}\notready
+\uses{def:flat-torus-metric, def:higher-rank-sphere-quotient}
+Let $A\in GL_n(\R)$, and choose the $L^2(\R^n)$-normalized Gaussian
+\[
+        g(x)=C\exp\left(-\frac12\norm{Ax}_2^2\right).
+\]
+For $R\ge1$ and $u\in\R^n$, define
+\[
+        y_{R,u}(k)=R^{-n/2}g\left(\frac{k-u}{R}\right),
+        \qquad k\in\Z^n,
+        \qquad
+        x_{R,u}=\frac{y_{R,u}}{\norm{y_{R,u}}_2}.
+\]
+Since $x_{R,u+m}=\tau_m x_{R,u}$ for $m\in\Z^n$, the map
+$u\mapsto[x_{R,u}]$ descends to $T_A$.
+\end{definition}
+
+\begin{lemma}[Gaussian correlation asymptotic]
+\label{lem:gaussian-correlation-asymptotic}
+\lean{SphereObstructionHilbertShiftQuotient.gaussianCorrelationAsymptotic}\notready
+\uses{def:gaussian-lattice-vectors, lem:summation}
+With the notation of \Cref{def:gaussian-lattice-vectors},
+\begin{equation}\label{eq:gaussian-correlation}
+        \ip{x_{R,u}}{x_{R,w}}
+        =\exp\left(-\frac{\norm{A(u-w)}_2^2}{4R^2}\right)
+          \bigl(1+O_N(R^{-N})\bigr),
+\end{equation}
+uniformly in $u,w\in\R^n$.
+\end{lemma}
+
+\begin{proof}
+Completing the square gives
+\[
+        \ip{y_{R,u}}{y_{R,w}}
+        =\exp\left(-\frac{\norm{A(u-w)}_2^2}{4R^2}\right)
+          P_R\left(\frac{u+w}{2}\right),
+\]
+where
+\[
+        P_R(c)=R^{-n}\sum_{k\in\Z^n}
+        g\left(\frac{k-c}{R}\right)^2.
+\]
+By \Cref{lem:summation}, applied to the Schwartz function $g^2$,
+$P_R(c)=1+O_N(R^{-N})$ uniformly in $c$.  Normalizing the vectors $y_{R,u}$ and
+$y_{R,w}$ gives the stated estimate.
+\end{proof}
+
 \begin{lemma}\label{lem:tori-in-sigma-n}
+\lean{SphereObstructionHilbertShiftQuotient.flatTorusFiniteSubsetEmbedsInHigherRankSphereQuotient}\notready
+\uses{def:flat-torus-metric, def:higher-rank-sphere-quotient, lem:sphere-correlation, lem:gaussian-correlation-asymptotic}
 Let $A\in GL_n(\R)$.  For every finite set $E\subset T_A$ and every $\eps>0$,
 there are points $p_u\in\Sigma_n$, $u\in E$, and a scale $\lambda>0$ such that
 \[
@@ -18,43 +68,12 @@ flat metric in the sphere quotient.  Choose representatives in $\R^n$ for the
 finitely many torus points in $E$, and keep the notation $u$ for these
 representatives.
 
-Choose the $L^2(\R^n)$-normalized Gaussian
-\[
-        g(x)=C\exp\left(-\frac12\norm{Ax}_2^2\right).
-\]
-For $R\ge1$ and $u\in\R^n$, define
-\[
-        y_{R,u}(k)=R^{-n/2}g\left(\frac{k-u}{R}\right),
-        \qquad k\in\Z^n,
-        \qquad
-        x_{R,u}=\frac{y_{R,u}}{\norm{y_{R,u}}_2}.
-\]
-Since $x_{R,u+m}=\tau_m x_{R,u}$ for $m\in\Z^n$, the map
-$u\mapsto[x_{R,u}]$ descends to $T_A$.  Thus the construction is independent of
-the chosen representative of the torus point.
+Use the Gaussian vectors of \Cref{def:gaussian-lattice-vectors}.  Since
+$u\mapsto[x_{R,u}]$ descends to $T_A$, the construction is independent of the
+chosen representative of the torus point.
 
-Completing the square gives
-\[
-        \ip{y_{R,u}}{y_{R,w}}
-        =\exp\left(-\frac{\norm{A(u-w)}_2^2}{4R^2}\right)
-          P_R\left(\frac{u+w}{2}\right),
-\]
-where
-\[
-        P_R(c)=R^{-n}\sum_{k\in\Z^n}
-        g\left(\frac{k-c}{R}\right)^2.
-\]
-By Lemma~\ref{lem:summation}, applied to the Schwartz function $g^2$, $P_R(c)=1+O_N(R^{-N})$ uniformly in $c$.
-After normalization,
-\begin{equation}\label{eq:gaussian-correlation}
-        \ip{x_{R,u}}{x_{R,w}}
-        =\exp\left(-\frac{\norm{A(u-w)}_2^2}{4R^2}\right)
-          \bigl(1+O_N(R^{-N})\bigr),
-\end{equation}
-again uniformly in $u,w$.
-
-Taking the supremum over translations means taking $w=v+m$, $m\in\Z^n$.
-The relative error in \eqref{eq:gaussian-correlation} is uniform in $m$ and all
+Taking the supremum over translations means taking $w=v+m$, $m\in\Z^n$.  The
+relative error in \eqref{eq:gaussian-correlation} is uniform in $m$ and all
 terms are positive: if
 $a_m=\exp(-\norm{A(u-v-m)}_2^2/(4R^2))$ and
 $b_m=a_m(1+\theta_m)$ with $|\theta_m|\le\delta_R$, then

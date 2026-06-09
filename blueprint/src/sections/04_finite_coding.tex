@@ -1,68 +1,80 @@
+\section{Finite coding into the shift quotient}
+
 The next lemma is a finite coding observation.  For finitely supported vectors in
 $\ell^2(\Z^n)$, only finitely many translation differences can affect the
 quotient distance.  A sufficiently large base-$M$ encoding preserves exactly
 those differences and creates no new nonzero correlations.
 
-\begin{lemma}\label{lem:sigma-n-to-sigma-1}
-For every finite set $F\subset\Sigma_n$ and every $\eps>0$, there is a finite
-set $F'\subset\Sigma_1$ that is $(1+\eps)$-bilipschitz equivalent to $F$.
+\begin{definition}[Mixed-radix map]\label{def:mixed-radix-map}
+\lean{SphereObstructionHilbertShiftQuotient.mixedRadixMap}\notready
+For $M\in\N$, define
+\[
+        \phi(k_1,\dots,k_n)=k_1+Mk_2+M^2k_3+\cdots+M^{n-1}k_n .
+\]
+This is a group homomorphism $\Z^n\to\Z$, so for all $k,l\in\Z^n$,
+\[
+        \phi(k)-\phi(l)=\phi(k-l).
+\]
+\end{definition}
+
+\begin{lemma}[Injectivity on a difference box]
+\label{lem:mixed-radix-injective}
+\lean{SphereObstructionHilbertShiftQuotient.mixedRadixInjectiveOnDifferenceBox}\notready
+\uses{def:mixed-radix-map}
+Let $B\subset\Z^n$ be a finite rectangular box, put $D=B-B$, and suppose
+$D\subset[-L,L]^n$.  If $M>2L+1$, then the mixed-radix map $\phi$ is injective
+on $D$ and on $B$.
 \end{lemma}
 
 \begin{proof}
-First assume that the points of $F$ can be represented by finitely supported
-unit vectors.  Thus choose representatives
+If $d,e\in D$ and $\phi(d)=\phi(e)$, then
+$h=d-e\in[-2L,2L]^n$ and $\phi(h)=0$.  Reducing this identity modulo $M$ gives
+$h_1=0$, because $|h_1|<M$; dividing by $M$ and repeating gives
+$h_2=\cdots=h_n=0$.  Thus $d=e$.  If $k,k'\in B$ and $\phi(k)=\phi(k')$, then
+$k-k'\in D$ and $\phi(k-k')=0=\phi(0)$, so $k=k'$.
+\end{proof}
+
+\begin{lemma}[Exact finite-support coding]\label{lem:coding-preserves-correlations}
+\lean{SphereObstructionHilbertShiftQuotient.codingPreservesCorrelations}\notready
+\uses{def:higher-rank-sphere-quotient, lem:sphere-correlation, lem:mixed-radix-injective}
+Let $f_1,\dots,f_N\in\Sphere(\ell^2(\Z^n))$ be finitely supported unit vectors,
+and let $B\subset\Z^n$ be a finite rectangular box containing all their supports.
+For $M$ large enough, encode the finite patterns in one dimension by
 \[
-        F=\{[f_1],\dots,[f_N]\},
-        \qquad f_i\in\Sphere(\ell^2(\Z^n)),
+        (Jf_i)(\phi(k))=f_i(k)\quad(k\in B),
+        \qquad
+        (Jf_i)(r)=0\quad(r\notin\phi(B)).
 \]
-with each $\operatorname{supp} f_i$ finite.  Choose a finite rectangular box
-$B\subset\Z^n$ containing the finite union
+Then the vectors $Jf_i$ are unit vectors and, for every $i,j$,
+\begin{equation}\label{eq:coding-correlations}
+        \bigl\{\ip{Jf_i}{\tau_r Jf_j}:r\in\Z\bigr\}
+        =
+        \bigl\{\ip{f_i}{\tau_a f_j}:a\in\Z^n\bigr\}.
+\end{equation}
+Consequently
 \[
-        \operatorname{supp} f_1\cup\cdots\cup\operatorname{supp} f_N.
+        d_{\Sigma_1}([Jf_i],[Jf_j])=d_{\Sigma_n}([f_i],[f_j])
+        \qquad(1\le i,j\le N).
 \]
-Here $B$ contains the supports of these chosen representatives, not the supports
+\end{lemma}
+
+\begin{proof}
+Here $B$ contains the supports of the chosen representatives, not the supports
 of all their translates.  Put $D=B-B$.  Then $D$ contains every translation
 $a\in\Z^n$ for which two chosen supports can overlap; if $a\notin D$, then
 \[
         \ip{f_i}{\tau_a f_j}=0
         \qquad(1\le i,j\le N).
 \]
-Choose $L\in\N$ with $D\subset[-L,L]^n$, choose $M\in\N$ with
-$M>2L+1$, and define
-\[
-        \phi(k_1,\dots,k_n)=k_1+Mk_2+M^2k_3+\cdots+M^{n-1}k_n .
-\]
-This is a group homomorphism $\Z^n\to\Z$.  Hence, for all $k,l\in\Z^n$,
-\[
-        \phi(k)-\phi(l)
-        =\sum_{q=1}^n M^{q-1}(k_q-l_q)
-        =\phi(k-l).
-\]
-The map $\phi$ is injective on $D$: if $d,e\in D$ and $\phi(d)=\phi(e)$, then
-\(h=d-e\in[-2L,2L]^n\) and $\phi(h)=0$.  Reducing this identity modulo $M$
-gives $h_1=0$, because $|h_1|<M$; dividing by $M$ and repeating gives
-$h_2=\cdots=h_n=0$.  Thus $d=e$.  In particular, $\phi$ is injective on $B$:
-if $k,k'\in B$ and $\phi(k)=\phi(k')$, then $k-k'\in D$ and
-$\phi(k-k')=0=\phi(0)$, so $k=k'$.
+Choose $L\in\N$ with $D\subset[-L,L]^n$ and then choose $M\in\N$ with
+$M>2L+1$.  By \Cref{lem:mixed-radix-injective}, $\phi$ is injective on $D$ and
+on $B$, so the encoded vectors $Jf_i$ are unit vectors.
 
-Encode the finite patterns in one dimension by
-\[
-        (Jf_i)(\phi(k))=f_i(k)\quad(k\in B),
-        \qquad
-        (Jf_i)(r)=0\quad(r\notin\phi(B)).
-\]
-The vectors $Jf_i$ are again unit vectors.  We claim that, for every $i,j$, the
-sets of correlations are the same:
-\begin{equation}\label{eq:coding-correlations}
-        \bigl\{\ip{Jf_i}{\tau_r Jf_j}:r\in\Z\bigr\}
-        =
-        \bigl\{\ip{f_i}{\tau_a f_j}:a\in\Z^n\bigr\}.
-\end{equation}
-Indeed, a one-dimensional shift can produce a nonzero overlap only if
-$r=\phi(k)-\phi(l)$ for some $k,l\in B$.  By the homomorphism identity above,
-this means $r=\phi(k-l)$; since $k-l\in D$, we have $r=\phi(a)$ for some
-$a\in D$.  For such $a$, injectivity on $D$ ensures that all overlapping pairs
-correspond exactly to pairs with difference $a$, and so
+A one-dimensional shift can produce a nonzero overlap only if
+$r=\phi(k)-\phi(l)$ for some $k,l\in B$.  By the homomorphism identity, this
+means $r=\phi(k-l)$; since $k-l\in D$, we have $r=\phi(a)$ for some $a\in D$.
+For such $a$, injectivity on $D$ ensures that all overlapping pairs correspond
+exactly to pairs with difference $a$, and so
 \[
         \ip{Jf_i}{\tau_{\phi(a)}Jf_j}_{\ell^2(\Z)}
         =
@@ -71,22 +83,38 @@ correspond exactly to pairs with difference $a$, and so
 All remaining shifts have zero correlation, and zero also occurs among the
 $\Z^n$-correlations by translating finite supports far apart.  This proves
 \eqref{eq:coding-correlations}.  Taking suprema in \eqref{eq:sphere-correlation}
-therefore gives
-\[
-        d_{\Sigma_1}([Jf_i],[Jf_j])=d_{\Sigma_n}([f_i],[f_j])
-        \qquad(1\le i,j\le N).
-\]
+gives the distance identity.
+\end{proof}
 
-For a general finite set $F=\{[x_1],\dots,[x_N]\}\subset\Sigma_n$, there is
-nothing to prove if $N\le1$.  Otherwise choose unit representatives $x_i$.  If
-$x_i'$ are other unit vectors, then
+\begin{lemma}[Stability under changing representatives]
+\label{lem:quotient-lipschitz-representatives}
+\lean{SphereObstructionHilbertShiftQuotient.quotientDistanceLipschitzRepresentatives}\notready
+\uses{def:higher-rank-sphere-quotient}
+For unit vectors $x_i,x_j,x_i',x_j'\in H_n$,
 \begin{equation}\label{eq:quotient-lipschitz-representatives}
         \left|d_{\Sigma_n}([x_i],[x_j])-d_{\Sigma_n}([x_i'],[x_j'])\right|
         \le \norm{x_i-x_i'}_2+\norm{x_j-x_j'}_2 .
 \end{equation}
-This follows by applying the triangle inequality to
-$\norm{x_i-\tau_a x_j}$ for each $a\in\Z^n$ and then taking infima.  Since
-the quotient metric is genuine and $F$ is finite,
+\end{lemma}
+
+\begin{proof}
+Apply the triangle inequality to $\norm{x_i-\tau_a x_j}$ for each $a\in\Z^n$
+and then take infima.
+\end{proof}
+
+\begin{lemma}[Finite-support approximation in the quotient]
+\label{lem:finite-support-approximation}
+\lean{SphereObstructionHilbertShiftQuotient.finiteSupportApproximationInQuotient}\notready
+\uses{lem:higher-rank-orbits-closed, lem:quotient-lipschitz-representatives}
+For every finite set $F\subset\Sigma_n$ and every $\eps>0$, there is a finite
+set represented by finitely supported unit vectors in $\Sphere(H_n)$ that is
+$(1+\eps)$-bilipschitz equivalent to $F$.
+\end{lemma}
+
+\begin{proof}
+Write $F=\{[x_1],\dots,[x_N]\}$ with unit representatives $x_i$.  There is
+nothing to prove if $N\le1$.  Otherwise, since the quotient metric is genuine
+and $F$ is finite,
 \[
         d_0=\min_{i<j}d_{\Sigma_n}([x_i],[x_j])>0 .
 \]
@@ -94,6 +122,20 @@ Choose $\eta>0$ so small that $(d_0+\eta)/(d_0-\eta)\le1+\eps$, and then
 approximate each $x_i$ in norm by a finitely supported unit vector $x_i'$ so
 that the right-hand side of \eqref{eq:quotient-lipschitz-representatives} is at
 most $\eta$ for every pair $i,j$.  The labelled finite set $\{[x_i']\}$ is then
-$(1+\eps)$-bilipschitz equivalent to $F$.  Applying the finitely supported case
-to $\{[x_i']\}$ completes the proof.
+$(1+\eps)$-bilipschitz equivalent to $F$.
+\end{proof}
+
+\begin{lemma}\label{lem:sigma-n-to-sigma-1}
+\lean{SphereObstructionHilbertShiftQuotient.higherRankFiniteSubsetEmbedsInShiftQuotient}\notready
+\uses{lem:coding-preserves-correlations, lem:finite-support-approximation}
+For every finite set $F\subset\Sigma_n$ and every $\eps>0$, there is a finite
+set $F'\subset\Sigma_1$ that is $(1+\eps)$-bilipschitz equivalent to $F$.
+\end{lemma}
+
+\begin{proof}
+For finitely supported representatives, \Cref{lem:coding-preserves-correlations}
+encodes the finite set into $\Sigma_1$ isometrically.  For a general finite set
+$F$, first apply \Cref{lem:finite-support-approximation} with the prescribed
+$\eps$, and then apply the exact finite-support coding to the approximating
+finite set.
 \end{proof}

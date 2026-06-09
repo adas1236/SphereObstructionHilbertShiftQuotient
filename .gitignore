@@ -12,3 +12,6 @@ blueprint/**/*.toc
 blueprint/**/*.fdb_latexmk
 blueprint/**/*.fls
 blueprint/**/*.synctex.gz
+
+*.md
+!README.md

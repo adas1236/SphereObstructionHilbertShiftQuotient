@@ -1,6 +1,8 @@
 \section{Proof of the theorem}
 
 \begin{proof}[Proof of \Cref{thm:main}]
+\proves{thm:main}
+\uses{prop:finite-determination, thm:khot-naor-flat-torus, lem:flat-torus-unit-lattice-isometry, lem:tori-in-sigma-n, lem:sigma-n-to-sigma-1, prop:chordal-angular-equivalence}
 Choose lattices $L_n\subset\R^n$ satisfying \eqref{eq:KN}, and write
 $L_n=A_n\Z^n$.  Then $T_{A_n}$ is isometric to $\R^n/L_n$.  By
 \eqref{eq:finite-determination}, $T_{A_n}$ contains a finite set $E_n$ with
@@ -11,11 +13,11 @@ Fix $\eta\in(0,1)$ so small that
 \[
         D_\eta=\frac{1+\eta}{1-\eta}(1+\eta)\le2 .
 \]
-By Lemma~\ref{lem:tori-in-sigma-n}, $E_n$ occurs inside $\Sigma_n$, after a scalar
+By \Cref{lem:tori-in-sigma-n}, $E_n$ occurs inside $\Sigma_n$, after a scalar
 rescaling, with bilipschitz error at most $(1+\eta)/(1-\eta)$.  By
-Lemma~\ref{lem:sigma-n-to-sigma-1}, that finite set occurs inside $\Sigma_1$
-with additional bilipschitz error at most $1+\eta$.  Scaling does not affect
-Hilbert distortion, so the resulting finite set $F_n\subset\Sigma_1$ satisfies
+\Cref{lem:sigma-n-to-sigma-1}, that finite set occurs inside $\Sigma_1$ with
+additional bilipschitz error at most $1+\eta$.  Scaling does not affect Hilbert
+distortion, so the resulting finite set $F_n\subset\Sigma_1$ satisfies
 \[
         c_2(F_n)\ge D_\eta^{-1}c_2(E_n)\ge \frac c4\sqrt n .
 \]
@@ -26,7 +28,20 @@ $c_2(\Sigma,d_{\rm ch})=\infty$ by \eqref{eq:finite-determination}.  The angular
 statement follows from \eqref{eq:metric-equivalence}.
 \end{proof}
 
-\begin{remark}
+\begin{corollary}[Unbounded finite distortion profile]
+\label{cor:finite-distortion-profile}
+\lean{SphereObstructionHilbertShiftQuotient.shiftSphereQuotientFiniteDistortionProfileUnbounded}\notready
+\uses{thm:main, prop:finite-determination}
+The shift quotient of the Hilbert sphere contains finite subsets of arbitrarily
+large Hilbert distortion.
+\end{corollary}
+
+\begin{proof}
+This is the finite-determination principle applied to \Cref{thm:main}.
+\end{proof}
+
+\begin{remark}\label{rem:finite-proof}
+\uses{cor:finite-distortion-profile}
 The proof is entirely finite.  In particular, the obstruction is not a
 large-scale phenomenon and does not rely on completeness, local compactness, or
 any limiting subset of the quotient.  It says that the finite Hilbert-distortion

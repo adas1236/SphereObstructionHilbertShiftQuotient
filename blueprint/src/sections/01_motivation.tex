@@ -16,16 +16,33 @@ obstruction for the bilateral shift: the orbit space of the unit sphere already
 has infinite Euclidean distortion.  No separate full-space statement is needed
 below.
 
-Let
+\begin{definition}[The shift sphere quotient]\label{def:shift-sphere-quotient}
+\lean{SphereObstructionHilbertShiftQuotient.shiftSphereQuotient}\notready
+Let $H=\ell^2(\Z)$, and let $S$ be the bilateral shift.  The shift sphere
+quotient is
 \[
-        \Sigma=\Sphere(\ell^2(\Z))/\langle S\rangle.
+        \Sigma=\Sphere(H)/\langle S\rangle .
 \]
-The shift orbits on the unit sphere are closed.  Indeed, if $S^{k_j}x\to y$
-in norm, then either $(k_j)$ has a constant subsequence, in which case $y$
-belongs to the orbit of $x$, or $|k_j|\to\infty$ along a subsequence.  In the
-latter case $S^{k_j}x\rightharpoonup0$, so norm convergence would force
-$y=0$, impossible on the unit sphere.  Thus the following quotient
-pseudometrics are genuine metrics.  The chordal quotient metric is
+\end{definition}
+
+\begin{lemma}\label{lem:shift-orbits-closed}
+\lean{SphereObstructionHilbertShiftQuotient.shiftOrbitsClosed}\notready
+\uses{def:shift-sphere-quotient}
+The shift orbits on the unit sphere of $\ell^2(\Z)$ are closed.
+\end{lemma}
+
+\begin{proof}
+If $S^{k_j}x\to y$ in norm, then either $(k_j)$ has a constant subsequence, in
+which case $y$ belongs to the orbit of $x$, or $|k_j|\to\infty$ along a
+subsequence.  In the latter case $S^{k_j}x\rightharpoonup0$, so norm convergence
+would force $y=0$, impossible on the unit sphere.
+\end{proof}
+
+\begin{definition}[Chordal and angular quotient metrics]
+\label{def:shift-quotient-metrics}
+\lean{SphereObstructionHilbertShiftQuotient.shiftChordalMetric, SphereObstructionHilbertShiftQuotient.shiftAngularMetric}\notready
+\uses{def:shift-sphere-quotient, lem:shift-orbits-closed}
+The chordal quotient metric on $\Sigma$ is
 \[
         d_{\rm ch}([x],[y])=\inf_{k\in\Z}\norm{x-S^k y}_2.
 \]
@@ -33,17 +50,34 @@ The intrinsic angular quotient metric is
 \[
         d_{\rm ang}([x],[y])=\inf_{k\in\Z}\arccos\ip{x}{S^k y}.
 \]
+By \Cref{lem:shift-orbits-closed}, these quotient pseudometrics are genuine
+metrics.
+\end{definition}
+
+\begin{proposition}[Chordal-angular equivalence]
+\label{prop:chordal-angular-equivalence}
+\lean{SphereObstructionHilbertShiftQuotient.chordalAngularMetricEquivalence}\notready
+\uses{def:shift-quotient-metrics}
 For unit vectors, $\norm{x-y}=2\sin(\theta(x,y)/2)$, where
-$\theta(x,y)=\arccos\ip{x}{y}$.  Since $t\mapsto2\sin(t/2)$ is increasing on
-$[0,\pi]$,
+$\theta(x,y)=\arccos\ip{x}{y}$.  Consequently
 \begin{equation}\label{eq:metric-equivalence}
         d_{\rm ch}=2\sin\frac{d_{\rm ang}}2,
         \qquad
         \frac2\pi d_{\rm ang}\le d_{\rm ch}\le d_{\rm ang}.
 \end{equation}
 Thus either metric may be used for questions of Hilbert distortion.
+\end{proposition}
+
+\begin{proof}
+The function $t\mapsto2\sin(t/2)$ is increasing on $[0,\pi]$, so the pointwise
+identity on the sphere passes to the infimum over the shift orbit.  The displayed
+bilipschitz inequalities are the standard estimates for $2\sin(t/2)$ on
+$[0,\pi]$.
+\end{proof}
 
 \begin{theorem}\label{thm:main}
+\lean{SphereObstructionHilbertShiftQuotient.shiftSphereQuotientInfiniteHilbertDistortion}\notready
+\uses{def:shift-quotient-metrics, prop:finite-determination, thm:khot-naor-flat-torus, lem:flat-torus-unit-lattice-isometry, lem:tori-in-sigma-n, lem:sigma-n-to-sigma-1, prop:chordal-angular-equivalence}
 For the bilateral shift on $H=\ell^2(\Z)$,
 \[
         c_2\bigl(\Sphere(H)/\langle S\rangle,d_{\rm ch}\bigr)=\infty.
