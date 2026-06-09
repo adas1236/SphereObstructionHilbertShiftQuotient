@@ -1,0 +1,87 @@
+\section{Flat tori inside higher-rank sphere quotients}
+
+\begin{lemma}\label{lem:tori-in-sigma-n}
+Let $A\in GL_n(\R)$.  For every finite set $E\subset T_A$ and every $\eps>0$,
+there are points $p_u\in\Sigma_n$, $u\in E$, and a scale $\lambda>0$ such that
+\[
+        (1-\eps)\lambda\rho_A(u,v)
+        \le d_{\Sigma_n}(p_u,p_v)
+        \le (1+\eps)\lambda\rho_A(u,v)
+\]
+for all $u,v\in E$.
+\end{lemma}
+
+\begin{proof}
+The reduction from an arbitrary lattice to the unit lattice has already been
+made in the definition of $T_A$.  It remains only to realize the corresponding
+flat metric in the sphere quotient.  Choose representatives in $\R^n$ for the
+finitely many torus points in $E$, and keep the notation $u$ for these
+representatives.
+
+Choose the $L^2(\R^n)$-normalized Gaussian
+\[
+        g(x)=C\exp\left(-\frac12\norm{Ax}_2^2\right).
+\]
+For $R\ge1$ and $u\in\R^n$, define
+\[
+        y_{R,u}(k)=R^{-n/2}g\left(\frac{k-u}{R}\right),
+        \qquad k\in\Z^n,
+        \qquad
+        x_{R,u}=\frac{y_{R,u}}{\norm{y_{R,u}}_2}.
+\]
+Since $x_{R,u+m}=\tau_m x_{R,u}$ for $m\in\Z^n$, the map
+$u\mapsto[x_{R,u}]$ descends to $T_A$.  Thus the construction is independent of
+the chosen representative of the torus point.
+
+Completing the square gives
+\[
+        \ip{y_{R,u}}{y_{R,w}}
+        =\exp\left(-\frac{\norm{A(u-w)}_2^2}{4R^2}\right)
+          P_R\left(\frac{u+w}{2}\right),
+\]
+where
+\[
+        P_R(c)=R^{-n}\sum_{k\in\Z^n}
+        g\left(\frac{k-c}{R}\right)^2.
+\]
+By Lemma~\ref{lem:summation}, applied to the Schwartz function $g^2$, $P_R(c)=1+O_N(R^{-N})$ uniformly in $c$.
+After normalization,
+\begin{equation}\label{eq:gaussian-correlation}
+        \ip{x_{R,u}}{x_{R,w}}
+        =\exp\left(-\frac{\norm{A(u-w)}_2^2}{4R^2}\right)
+          \bigl(1+O_N(R^{-N})\bigr),
+\end{equation}
+again uniformly in $u,w$.
+
+Taking the supremum over translations means taking $w=v+m$, $m\in\Z^n$.
+The relative error in \eqref{eq:gaussian-correlation} is uniform in $m$ and all
+terms are positive: if
+$a_m=\exp(-\norm{A(u-v-m)}_2^2/(4R^2))$ and
+$b_m=a_m(1+\theta_m)$ with $|\theta_m|\le\delta_R$, then
+\[
+        (1-\delta_R)\sup_m a_m\le \sup_m b_m\le(1+\delta_R)\sup_m a_m .
+\]
+Since $\delta_R=O_N(R^{-N})$, the definition of $\rho_A$ gives
+\[
+        \sup_{m\in\Z^n}\ip{x_{R,u}}{x_{R,v+m}}
+        =\exp\left(-\frac{\rho_A(u,v)^2}{4R^2}\right)
+          \bigl(1+O_N(R^{-N})\bigr).
+\]
+Choose $N>2$.  For the fixed finite set $E$, uniformly over distinct
+$u,v\in E$,
+\[
+\begin{aligned}
+        d_{\Sigma_n}([x_{R,u}],[x_{R,v}])^2
+        &=2-2\sup_{m\in\Z^n}\ip{x_{R,u}}{\tau_m x_{R,v}}  \\
+        &=2\left(1-\exp\left(-\frac{\rho_A(u,v)^2}{4R^2}\right)\right)
+          +o(R^{-2}),
+\end{aligned}
+\]
+and hence
+\[
+        d_{\Sigma_n}([x_{R,u}],[x_{R,v}])
+        =\frac{\rho_A(u,v)}{\sqrt2 R}(1+o(1))
+        \qquad (R\to\infty).
+\]
+Taking $R$ large proves the lemma with $\lambda=(\sqrt2 R)^{-1}$.
+\end{proof}

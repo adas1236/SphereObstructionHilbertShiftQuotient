@@ -1,0 +1,57 @@
+\section{Motivation and statement}
+
+A basic problem in bilipschitz invariant theory is the following.  Given a
+Hilbert space $V$ and a subgroup $G\le O(V)$, when does the orbit space $V/G$,
+with its natural quotient metric, admit a bilipschitz embedding into a Hilbert
+space?  Cahill, Iverson, and Mixon formulated this program in
+\cite{CahillIversonMixon}; their motivation comes from stable invariant
+representations of data observed only modulo symmetries, such as relabelings of
+graphs, permutations of point clouds, rotations of landmarks, and time shifts of
+signals.  In that paper, Problem~48 asks specifically whether
+$\ell^2(\Z)/\Z$ admits a bilipschitz embedding into Hilbert space, and asks for
+the exact value of its Euclidean distortion \cite[Problem~48]{CahillIversonMixon}.
+
+Throughout, all Hilbert spaces are real.  We focus on the sharper spherical
+obstruction for the bilateral shift: the orbit space of the unit sphere already
+has infinite Euclidean distortion.  No separate full-space statement is needed
+below.
+
+Let
+\[
+        \Sigma=\Sphere(\ell^2(\Z))/\langle S\rangle.
+\]
+The shift orbits on the unit sphere are closed.  Indeed, if $S^{k_j}x\to y$
+in norm, then either $(k_j)$ has a constant subsequence, in which case $y$
+belongs to the orbit of $x$, or $|k_j|\to\infty$ along a subsequence.  In the
+latter case $S^{k_j}x\rightharpoonup0$, so norm convergence would force
+$y=0$, impossible on the unit sphere.  Thus the following quotient
+pseudometrics are genuine metrics.  The chordal quotient metric is
+\[
+        d_{\rm ch}([x],[y])=\inf_{k\in\Z}\norm{x-S^k y}_2.
+\]
+The intrinsic angular quotient metric is
+\[
+        d_{\rm ang}([x],[y])=\inf_{k\in\Z}\arccos\ip{x}{S^k y}.
+\]
+For unit vectors, $\norm{x-y}=2\sin(\theta(x,y)/2)$, where
+$\theta(x,y)=\arccos\ip{x}{y}$.  Since $t\mapsto2\sin(t/2)$ is increasing on
+$[0,\pi]$,
+\begin{equation}\label{eq:metric-equivalence}
+        d_{\rm ch}=2\sin\frac{d_{\rm ang}}2,
+        \qquad
+        \frac2\pi d_{\rm ang}\le d_{\rm ch}\le d_{\rm ang}.
+\end{equation}
+Thus either metric may be used for questions of Hilbert distortion.
+
+\begin{theorem}\label{thm:main}
+For the bilateral shift on $H=\ell^2(\Z)$,
+\[
+        c_2\bigl(\Sphere(H)/\langle S\rangle,d_{\rm ch}\bigr)=\infty.
+\]
+Consequently,
+\[
+        c_2\bigl(\Sphere(H)/\langle S\rangle,d_{\rm ang}\bigr)=\infty.
+\]
+Equivalently, the shift quotient of the Hilbert sphere contains finite subsets
+of arbitrarily large Hilbert distortion.
+\end{theorem}

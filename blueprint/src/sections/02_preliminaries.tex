@@ -1,0 +1,84 @@
+\section{Preliminaries}
+
+For a metric space $X$, let $c_2(X)$ denote its least bilipschitz distortion
+into Hilbert space, with $c_2(X)=\infty$ if no such embedding exists.  We use the
+standard finite-determination principle
+\begin{equation}\label{eq:finite-determination}
+        c_2(X)=\sup\{c_2(F):F\subset X,\ |F|<\infty\},
+\end{equation}
+which is \cite[Proposition~31]{CahillIversonMixon} and follows from the usual
+Hilbert-ultraproduct argument.
+
+For $n\ge1$, put
+\[
+        H_n=\ell^2(\Z^n),
+        \qquad
+        \Sigma_n=\Sphere(H_n)/\Z^n,
+\]
+where $\Z^n$ acts by translations
+\[
+        (\tau_a f)(k)=f(k-a),\qquad a,k\in\Z^n.
+\]
+Unless stated otherwise, $\Sigma_n$ carries the chordal quotient metric
+\[
+        d_{\Sigma_n}([f],[g])=\inf_{a\in\Z^n}\norm{f-\tau_a g}_2.
+\]
+The same argument applies in $H_n$: if $\tau_{a_j}f\to g$ and, after passing
+to a subsequence, $a_j\to\infty$ in $\Z^n$, then $\tau_{a_j}f\rightharpoonup0$,
+contradicting $\norm{g}=1$; otherwise the sequence $(a_j)$ has a constant
+subsequence.  Thus translation orbits on $\Sphere(H_n)$ are closed.
+For unit vectors this is equivalently
+\begin{equation}\label{eq:sphere-correlation}
+        d_{\Sigma_n}([f],[g])^2
+        =2-2\sup_{a\in\Z^n}\ip{f}{\tau_a g}.
+\end{equation}
+
+The only external input is the flat-torus lower bound of Khot--Naor: there
+is a universal constant $c>0$ and, for arbitrarily large $n$, a lattice
+$L_n\subset\R^n$ such that
+\begin{equation}\label{eq:KN}
+        c_2(\R^n/L_n)\ge c\sqrt n .
+\end{equation}
+One may obtain this directly from \cite[Theorem~1.1 and the paragraph following
+it]{HavivRegev}, where the theorem is attributed to Khot--Naor.  In the original
+paper, this is the flat-torus consequence of \cite[Theorem~5.1 and
+Corollary~5.2]{KhotNaor}.
+
+Given $A\in GL_n(\R)$, write $T_A=\R^n/\Z^n$ with the flat quotient metric
+\begin{equation}\label{eq:rhoA}
+        \rho_A(u,v)=\min_{m\in\Z^n}\norm{A(u-v-m)}_2.
+\end{equation}
+Then $T_A$ is isometric to $\R^n/A\Z^n$: if $L=A\Z^n$, the map
+$x+L\mapsto A^{-1}x+\Z^n$ identifies $\R^n/L$ with $T_A$.  Thus the hard
+flat tori supplied by \eqref{eq:KN} may be regarded as tori with the unit
+lattice; the matrix $A$ simply records the flat metric.
+
+We shall use the following standard form of Poisson summation.
+
+\begin{lemma}[Uniform summation estimate]\label{lem:summation}
+Let $G\in\mathcal S(\R^n)$.  For every $N\ge1$ there is a constant
+$C_{G,N}<\infty$ such that, for every $R\ge1$ and every $c\in\R^n$,
+\[
+\left|R^{-n}\sum_{k\in\Z^n}G\left(\frac{k-c}{R}\right)
+      -\int_{\R^n}G(x)\,dx\right|
+\le C_{G,N}R^{-N}.
+\]
+\end{lemma}
+
+\begin{proof}
+With the convention
+$\widehat G(\xi)=\int_{\R^n}G(x)e^{-2\pi i\ip{x}{\xi}}\,dx$, Poisson summation
+gives
+\[
+        R^{-n}\sum_{k\in\Z^n}G\left(\frac{k-c}{R}\right)
+        =\sum_{\ell\in\Z^n}e^{-2\pi i\ip{\ell}{c}}\widehat G(R\ell).
+\]
+The term $\ell=0$ is $\int_{\R^n}G$.  Since $\widehat G$ is Schwartz, choose
+$M>N+n$ and bound the remaining terms by
+\[
+        \sum_{\ell\ne0}|\widehat G(R\ell)|
+        \le C_MR^{-M}\sum_{\ell\ne0}\norm{\ell}^{-M}
+        \le C_{G,N}R^{-N},
+\]
+uniformly in $c$.
+\end{proof}
