@@ -1,6 +1,7 @@
 import SphereObstructionHilbertShiftQuotient.SphereQuotient
 
 set_option linter.style.header false
+open scoped ENNReal
 
 /-!
 Finite mixed-radix coding into the one-dimensional shift quotient.
@@ -13,14 +14,41 @@ namespace SphereObstructionHilbertShiftQuotient
 
 noncomputable section
 
+private abbrev codingHigherRankL2Space (n : Nat) : Type :=
+  ↥(lp (fun (_ : Fin n -> Int) => Real) 2)
+
+private abbrev codingShiftL2Space : Type :=
+  ↥(lp (fun (_ : Int) => Real) 2)
+
+private noncomputable def defaultShiftL2Vector : codingShiftL2Space :=
+  lp.single (E := fun (_ : Int) => Real) 2 0 1
+
+private lemma defaultShiftL2Vector_norm :
+    ‖defaultShiftL2Vector‖ = 1 := by
+  simp [defaultShiftL2Vector]
+
+private noncomputable def defaultShiftSphereVector : shiftHilbertSphere :=
+  ⟨defaultShiftL2Vector, by
+    rw [Metric.mem_sphere, dist_zero_right]
+    exact defaultShiftL2Vector_norm⟩
+
+private noncomputable def normalizedShiftL2Vector
+    (f : codingShiftL2Space) (hf : f ≠ 0) : shiftHilbertSphere :=
+  ⟨(‖f‖)⁻¹ • f, by
+    rw [Metric.mem_sphere, dist_zero_right, norm_smul]
+    have hnorm : ‖f‖ ≠ 0 := norm_ne_zero_iff.mpr hf
+    simp [hnorm]⟩
+
 /-- A finitely supported representative in the higher-rank Hilbert sphere. -/
-noncomputable def finitelySupportedHigherRankPoint (n : Nat) : Type := by
-  sorry
+noncomputable def finitelySupportedHigherRankPoint (n : Nat) : Type :=
+  Sigma fun x : higherRankHilbertSphere n =>
+    {S : Finset (Fin n -> Int) //
+      ∀ k : Fin n -> Int, k ∉ S -> ((x : codingHigherRankL2Space n) k) = 0}
 
 /-- The higher-rank Hilbert-sphere representative carried by finitely supported data. -/
 noncomputable def finitelySupportedHigherRankRepresentative
-    (n : Nat) : finitelySupportedHigherRankPoint n -> higherRankHilbertSphere n := by
-  sorry
+    (n : Nat) : finitelySupportedHigherRankPoint n -> higherRankHilbertSphere n :=
+  fun x => x.1
 
 /-- The quotient point represented by a finitely supported higher-rank vector. -/
 noncomputable def finitelySupportedToHigherRankQuotient
@@ -32,13 +60,33 @@ The assertion that all support differences relevant to a finite family of finite
 higher-rank data lie in the coordinate box `[-L, L]^n`.
 -/
 def finiteSupportDifferenceBoxBound
-    (n L : Nat) (_F : Finset (finitelySupportedHigherRankPoint n)) : Prop := by
-  sorry
+    (n L : Nat) (F : Finset (finitelySupportedHigherRankPoint n)) : Prop :=
+  ∀ x, x ∈ F -> ∀ y, y ∈ F -> ∀ k, k ∈ x.2.1 -> ∀ l, l ∈ y.2.1 ->
+    ∀ i : Fin n, -(L : Int) <= k i - l i ∧ k i - l i <= (L : Int)
+
+/-- The mixed-radix homomorphism from `Z^n` to `Z`. -/
+def mixedRadixMap (n M : Nat) (k : Fin n -> Int) : Int :=
+  Finset.univ.sum (fun i : Fin n => (M : Int) ^ (i : Nat) * k i)
+
+private noncomputable def encodedShiftFunction
+    (n M : Nat) (x : finitelySupportedHigherRankPoint n) : Int -> Real := by
+  classical
+  exact fun r =>
+    if h : ∃ k : Fin n -> Int, k ∈ x.2.1 ∧ mixedRadixMap n M k = r then
+      ((x.1 : codingHigherRankL2Space n) (Classical.choose h))
+    else
+      0
 
 /-- One-dimensional shift representative obtained by mixed-radix coding. -/
 noncomputable def encodedShiftRepresentative
     (n M : Nat) : finitelySupportedHigherRankPoint n -> shiftHilbertSphere := by
-  sorry
+  classical
+  exact fun x =>
+    let raw : Int -> Real := encodedShiftFunction n M x
+    if h : ∃ hmem : Memℓp raw (2 : ℝ≥0∞), (⟨raw, hmem⟩ : codingShiftL2Space) ≠ 0 then
+      normalizedShiftL2Vector ⟨raw, Classical.choose h⟩ (Classical.choose_spec h)
+    else
+      defaultShiftSphereVector
 
 /-- The set of translated correlations between two shift representatives. -/
 noncomputable def shiftCorrelationSet (f g : shiftHilbertSphere) : Set Real :=
@@ -49,10 +97,6 @@ noncomputable def finitelySupportedHigherRankCorrelationSet
     (n : Nat) (x y : finitelySupportedHigherRankPoint n) : Set Real :=
   higherRankCorrelationSet n (finitelySupportedHigherRankRepresentative n x)
     (finitelySupportedHigherRankRepresentative n y)
-
-/-- The mixed-radix homomorphism from `Z^n` to `Z`. -/
-def mixedRadixMap (n M : Nat) (k : Fin n -> Int) : Int :=
-  Finset.univ.sum (fun i : Fin n => (M : Int) ^ (i : Nat) * k i)
 
 /-- The mixed-radix map is injective on boxes of bounded differences. -/
 theorem mixedRadixInjectiveOnDifferenceBox

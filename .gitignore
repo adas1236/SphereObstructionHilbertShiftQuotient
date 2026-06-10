@@ -15,3 +15,6 @@ blueprint/**/*.synctex.gz
 
 *.md
 !README.md
+
+.agents
+.codex

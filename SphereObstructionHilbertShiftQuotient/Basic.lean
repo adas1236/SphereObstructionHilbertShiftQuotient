@@ -11,8 +11,8 @@ project-local predicates used to state the first-pass declaration stubs.
 
 namespace SphereObstructionHilbertShiftQuotient
 
-/-- The coordinate model for finite-dimensional real Euclidean space. -/
-abbrev EuclideanSpace (n : Nat) := Fin n -> Real
+/-- The mathlib model for finite-dimensional real Euclidean space. -/
+abbrev RealEuclideanSpace (n : Nat) := _root_.EuclideanSpace Real (Fin n)
 
 /--
 A finite subset of one pseudometric space embeds into another with distortion at most `K`,
