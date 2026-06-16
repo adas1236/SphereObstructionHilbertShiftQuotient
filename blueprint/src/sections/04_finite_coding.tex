@@ -37,7 +37,8 @@ $k-k'\in D$ and $\phi(k-k')=0=\phi(0)$, so $k=k'$.
 \begin{lemma}[Exact finite-support coding]\label{lem:coding-preserves-correlations}
 \lean{SphereObstructionHilbertShiftQuotient.codingPreservesCorrelations}\notready
 \uses{def:higher-rank-sphere-quotient, lem:sphere-correlation, lem:mixed-radix-injective}
-Let $f_1,\dots,f_N\in\Sphere(\ell^2(\Z^n))$ be finitely supported unit vectors,
+Assume $n\ge1$.  Let
+$f_1,\dots,f_N\in\Sphere(\ell^2(\Z^n))$ be finitely supported unit vectors,
 and let $B\subset\Z^n$ be a finite rectangular box containing all their supports.
 For $M$ large enough, encode the finite patterns in one dimension by
 \[
