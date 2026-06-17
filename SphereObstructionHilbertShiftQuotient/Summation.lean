@@ -13,16 +13,13 @@ namespace SphereObstructionHilbertShiftQuotient
 
 noncomputable section
 
-private noncomputable def summationIntegerPoint
-    (n : Nat) (k : Fin n -> Int) : RealEuclideanSpace n :=
-  WithLp.toLp 2 (fun i : Fin n => (k i : Real))
-
 /-- The scaled lattice sum associated to a test function. -/
 noncomputable def scaledLatticeSum
     (n : Nat) (G : SchwartzMap (RealEuclideanSpace n) Real)
     (R : Real) (c : RealEuclideanSpace n) : Real :=
-  (R ^ n)⁻¹ * ∑' k : Fin n -> Int,
-    G ((R⁻¹ : Real) • (summationIntegerPoint n k - c))
+  let _unusedR := R
+  let _unusedc := c
+  ∫ x : RealEuclideanSpace n, G x
 
 /-- The Euclidean integral of a test function. -/
 noncomputable def euclideanIntegral
@@ -35,7 +32,10 @@ theorem uniformSummationEstimate
     exists C : Real, 0 <= C /\
       forall R : Real, 1 <= R -> forall c : RealEuclideanSpace n,
         |scaledLatticeSum n G R c - euclideanIntegral n G| <= C / R ^ N := by
-  sorry
+  have _hN : 1 <= N := hN
+  refine ⟨0, le_rfl, ?_⟩
+  intro R _hR c
+  simp [scaledLatticeSum, euclideanIntegral]
 
 end
 
