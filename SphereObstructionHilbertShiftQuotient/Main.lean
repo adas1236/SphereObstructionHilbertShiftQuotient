@@ -23,7 +23,7 @@ private lemma hilbertDistortion_lt_top_witness
     (X : Type u) [PseudoMetricSpace X] (h : hilbertDistortion.{u, w} X < ⊤) :
     ∃ D : ENNReal, D < ⊤ /\
       1 ≤ D /\
-        ∃ (H : Type w) (_ : NormedAddCommGroup H) (_ : InnerProductSpace ℝ H)
+        ∃ (H : Type (max u w)) (_ : NormedAddCommGroup H) (_ : InnerProductSpace ℝ H)
             (_ : CompleteSpace H),
           ∃ f : X → H, ∃ scale : ℝ,
             0 < scale /\
@@ -33,14 +33,24 @@ private lemma hilbertDistortion_lt_top_witness
                     D * ENNReal.ofReal (scale * dist x y) := by
   rw [hilbertDistortion] at h
   rcases sInf_lt_iff.mp h with ⟨D, hDmem, hDtop⟩
-  exact ⟨D, hDtop, hDmem⟩
+  have hDmem' : 1 ≤ D ∧
+      ∃ (H : Type (max u w)) (_ : NormedAddCommGroup H) (_ : InnerProductSpace ℝ H)
+          (_ : CompleteSpace H),
+        ∃ f : X → H, ∃ scale : ℝ,
+          0 < scale ∧
+            ∀ x y : X,
+              ENNReal.ofReal (scale * dist x y) ≤ ENNReal.ofReal ‖f x - f y‖ ∧
+                ENNReal.ofReal ‖f x - f y‖ ≤
+                  D * ENNReal.ofReal (scale * dist x y) := by
+    simpa using hDmem
+  exact ⟨D, hDtop, hDmem'⟩
 
 private lemma finiteSubsetHilbertDistortion_le_of_embedsWithDistortion
     {X : Type u} {Y : Type v} [PseudoMetricSpace X] [PseudoMetricSpace Y]
     (F : Finset X) {K : ℝ} (hK : 1 ≤ K)
     (hFY : FiniteMetricEmbedsWithDistortion Y F K)
     {D : ENNReal} (hD : 1 ≤ D)
-    {H : Type w} [NormedAddCommGroup H] [InnerProductSpace ℝ H] [CompleteSpace H]
+    {H : Type (max u w)} [NormedAddCommGroup H] [InnerProductSpace ℝ H] [CompleteSpace H]
     (g : Y → H) {targetScale : ℝ} (htargetScale : 0 < targetScale)
     (hg : ∀ x y : Y,
       ENNReal.ofReal (targetScale * dist x y) ≤ ENNReal.ofReal ‖g x - g y‖ /\
