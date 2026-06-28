@@ -372,7 +372,7 @@ private lemma encodedShiftL2_inner_shift_sum
         else
           0 := by
   rw [shiftL2Vector_encoded]
-  simp [encodedShiftL2Vector, inner_sum, sum_inner]
+  simp only [encodedShiftL2Vector, inner_sum, sum_inner]
   rw [Finset.sum_comm]
   simp [lp_inner_single_single]
 
@@ -407,7 +407,7 @@ private lemma higherRank_inner_translation_sum
           ((x.1 : codingHigherRankL2Space n) k) * ((y.1 : codingHigherRankL2Space n) l)
         else
           0 := by
-      simp [vx, vy, inner_sum, sum_inner]
+      simp only [inner_sum, sum_inner, vx, vy]
       rw [Finset.sum_comm]
       simp [lp_inner_single_single]
 
@@ -554,7 +554,7 @@ private lemma mem_encodedShiftDifferenceFinset
     {k l : Fin n -> Int} (hk : k ∈ x.2.1) (hl : l ∈ y.2.1) :
     mixedRadixMap n M k - mixedRadixMap n M l ∈ encodedShiftDifferenceFinset n M x y := by
   classical
-  simp [encodedShiftDifferenceFinset]
+  simp only [encodedShiftDifferenceFinset, Finset.mem_biUnion, Finset.mem_image]
   exact ⟨k, hk, l, hl, rfl⟩
 
 private lemma shiftRepresentativeInner_encoded_eq_zero_of_not_mem
@@ -635,7 +635,7 @@ theorem codingPreservesCorrelations
     constructor
     · rintro ⟨r, rfl⟩
       by_cases hr : r ∈ encodedShiftDifferenceFinset n M x y
-      · simp [encodedShiftDifferenceFinset] at hr
+      · simp only [encodedShiftDifferenceFinset, Finset.mem_biUnion, Finset.mem_image] at hr
         rcases hr with ⟨k, hk, l, hl, hrl⟩
         let a : Fin n -> Int := k - l
         have ha : boundedByBox n L a := hF x hx y hy k hk l hl

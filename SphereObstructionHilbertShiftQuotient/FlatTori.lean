@@ -247,7 +247,10 @@ private theorem dualLatticeBasis_spec {n : Nat} (Λ : KNFullRankLattice n) :
     IsDualLattice Λ ⟨dualLatticeBasis Λ.basis⟩ := by
   classical
   intro u
-  simp [KNFullRankLattice.carrier, matrixIntegerLattice, dualLatticeBasis, integerLattice]
+  simp only [KNFullRankLattice.carrier, matrixIntegerLattice, dualLatticeBasis,
+    integerLattice, AddSubgroup.mem_map, AddSubgroup.mem_mk, AddSubmonoid.mem_mk,
+    AddSubsemigroup.mem_mk, Set.mem_setOf_eq, LinearMap.toAddMonoidHom_coe,
+    existsAndEq, true_and, forall_exists_index, forall_apply_eq_imp_iff]
   constructor
   · rintro ⟨k, rfl⟩ l
     exact inverseTranspose_inner_integer Λ.basis.matrix Λ.basis.invertible k l
@@ -314,7 +317,10 @@ theorem knDoubleDual {n : Nat} (Λ : KNFullRankLattice n) :
   · intro hu v hv
     simpa [real_inner_comm] using (knDualLattice_spec Λ v).1 hv u hu
   · intro h
-    simp [KNFullRankLattice.carrier, matrixIntegerLattice, integerLattice]
+    simp only [KNFullRankLattice.carrier, matrixIntegerLattice, integerLattice,
+      AddSubgroup.mem_map, AddSubgroup.mem_mk, AddSubmonoid.mem_mk,
+      AddSubsemigroup.mem_mk, Set.mem_setOf_eq, LinearMap.toAddMonoidHom_coe,
+      existsAndEq, true_and]
     let hcoord : ∀ i : Fin n, IsIntegerReal ((Λ.basis.matrix⁻¹.mulVec (fun j => u j)) i) := by
       intro i
       let w : RealEuclideanSpace n :=
@@ -322,7 +328,10 @@ theorem knDoubleDual {n : Nat} (Λ : KNFullRankLattice n) :
       have hw : w ∈ (knDualLattice Λ).carrier := by
         refine (knDualLattice_spec Λ w).2 ?_
         intro v hv
-        simp [KNFullRankLattice.carrier, matrixIntegerLattice, integerLattice] at hv
+        simp only [KNFullRankLattice.carrier, matrixIntegerLattice, integerLattice,
+          AddSubgroup.mem_map, AddSubgroup.mem_mk, AddSubmonoid.mem_mk,
+          AddSubsemigroup.mem_mk, Set.mem_setOf_eq, LinearMap.toAddMonoidHom_coe,
+          existsAndEq, true_and] at hv
         rcases hv with ⟨l, rfl⟩
         exact inverseTranspose_inner_integer Λ.basis.matrix Λ.basis.invertible
           (intStdBasis i) l
@@ -385,11 +394,13 @@ private lemma integerVector_mem_standardIntegerSubmodule
   rw [Submodule.mem_span_range_iff_exists_fun]
   refine ⟨k, ?_⟩
   ext i
-  simp [integerVector, euclideanStdBasis]
+  simp only [integerVector, euclideanStdBasis, EuclideanSpace.basisFun_toBasis,
+    PiLp.basisFun_apply, WithLp.ofLp_sum, WithLp.ofLp_smul, zsmul_eq_mul,
+    Finset.sum_apply, Pi.mul_apply, Pi.intCast_apply]
   rw [Finset.sum_eq_single i]
   · simp
   · intro j _ hj
-    rw [Pi.single_eq_of_ne]
+    rw [PiLp.single_eq_of_ne]
     · simp
     · exact fun h => hj h.symm
   · intro hi
@@ -408,11 +419,13 @@ private lemma integerLattice_eq_standardIntegerSubmodule (n : Nat) :
     rcases hx with ⟨k, rfl⟩
     refine ⟨k, ?_⟩
     ext i
-    simp [integerVector, euclideanStdBasis]
+    simp only [integerVector, euclideanStdBasis, EuclideanSpace.basisFun_toBasis,
+      PiLp.basisFun_apply, WithLp.ofLp_sum, WithLp.ofLp_smul, zsmul_eq_mul,
+      Finset.sum_apply, Pi.mul_apply, Pi.intCast_apply]
     rw [Finset.sum_eq_single i]
     · simp
     · intro j _ hj
-      rw [Pi.single_eq_of_ne]
+      rw [PiLp.single_eq_of_ne]
       · simp
       · exact fun h => hj h.symm
     · intro hi
@@ -808,8 +821,6 @@ private noncomputable def matrixLinearEquiv {n : Nat} (A : LatticeBasis n) :
 private lemma matrixLinearEquiv_eq_toEuclideanLin {n : Nat} (A : LatticeBasis n) :
     (matrixLinearEquiv A : RealEuclideanSpace n →ₗ[Real] RealEuclideanSpace n) =
       Matrix.toEuclideanLin A.matrix := by
-  change (matrixLinearEquiv A : RealEuclideanSpace n →ₗ[Real] RealEuclideanSpace n) =
-    Matrix.toEuclideanLin A.matrix
   rw [Matrix.toEuclideanLin_eq_toLin_orthonormal]
   rfl
 
@@ -891,7 +902,7 @@ private lemma unitAddTorus_mFourier_euclideanToUnitAddTorus
   rw [← Complex.exp_sum]
   congr 1
   simp only [Finset.mul_sum, Complex.ofReal_sum, Complex.ofReal_mul, Complex.ofReal_intCast]
-  ring
+  ring_nf
 
 private lemma euclideanToUnitAddTorus_surjective (n : Nat) :
     Function.Surjective (euclideanToUnitAddTorus n) := by
@@ -1726,8 +1737,10 @@ private lemma scaledLattice_carrier_iff {n : Nat}
       ∃ η : RealEuclideanSpace n, η ∈ Λ.carrier ∧ γ = t • η := by
   constructor
   · intro hγ
-    simp [KNFullRankLattice.carrier, matrixIntegerLattice, integerLattice,
-      scaledLatticeBasis] at hγ
+    simp only [KNFullRankLattice.carrier, matrixIntegerLattice, integerLattice,
+      scaledLatticeBasis, AddSubgroup.mem_map, AddSubgroup.mem_mk, AddSubmonoid.mem_mk,
+      AddSubsemigroup.mem_mk, Set.mem_setOf_eq, LinearMap.toAddMonoidHom_coe,
+      existsAndEq, true_and, toEuclideanLin_smul_matrix] at hγ
     rcases hγ with ⟨k, rfl⟩
     let η : RealEuclideanSpace n := Matrix.toEuclideanLin Λ.basis.matrix (integerVector n k)
     refine ⟨η, ?_, ?_⟩
@@ -1735,11 +1748,13 @@ private lemma scaledLattice_carrier_iff {n : Nat}
       simp [η, matrixIntegerLattice, integerLattice]
     · simp [η]
   · rintro ⟨η, hη, rfl⟩
-    simp [KNFullRankLattice.carrier, matrixIntegerLattice, integerLattice] at hη ⊢
+    simp only [KNFullRankLattice.carrier, matrixIntegerLattice, integerLattice,
+      AddSubgroup.mem_map, AddSubgroup.mem_mk, AddSubmonoid.mem_mk,
+      AddSubsemigroup.mem_mk, Set.mem_setOf_eq, LinearMap.toAddMonoidHom_coe,
+      existsAndEq, true_and] at hη ⊢
     rcases hη with ⟨k, rfl⟩
     refine ⟨k, ?_⟩
-    simpa [scaledLatticeBasis] using
-      toEuclideanLin_smul_matrix Λ.basis.matrix t (integerVector n k)
+    exact toEuclideanLin_smul_matrix Λ.basis.matrix t (integerVector n k)
 
 private noncomputable def matrixEuclideanBasis {n : Nat} (A : LatticeBasis n) :
     Module.Basis (Fin n) Real (RealEuclideanSpace n) :=
@@ -1749,11 +1764,13 @@ private lemma integerVector_eq_sum_euclideanStdBasis
     (n : Nat) (k : Fin n -> Int) :
     integerVector n k = (∑ i, k i • euclideanStdBasis n i : RealEuclideanSpace n) := by
   ext i
-  simp [integerVector, euclideanStdBasis]
+  simp only [integerVector, euclideanStdBasis, EuclideanSpace.basisFun_toBasis,
+    PiLp.basisFun_apply, WithLp.ofLp_sum, WithLp.ofLp_smul, zsmul_eq_mul,
+    Finset.sum_apply, Pi.mul_apply, Pi.intCast_apply]
   rw [Finset.sum_eq_single i]
   · simp
   · intro j _ hj
-    rw [Pi.single_eq_of_ne]
+    rw [PiLp.single_eq_of_ne]
     · simp
     · exact fun h => hj h.symm
   · intro hi
@@ -1780,8 +1797,10 @@ private lemma matrixIntegerLattice_eq_span_matrixEuclideanBasis {n : Nat} (A : L
       (Submodule.span ℤ (Set.range (matrixEuclideanBasis A))).toAddSubgroup := by
   ext y
   constructor
-  · simp [matrixIntegerLattice, integerLattice]
-    rintro k rfl
+  · simp only [matrixIntegerLattice, integerLattice, AddSubgroup.mem_map, AddSubgroup.mem_mk,
+      AddSubmonoid.mem_mk, AddSubsemigroup.mem_mk, Set.mem_setOf_eq,
+      LinearMap.toAddMonoidHom_coe, existsAndEq, true_and, Submodule.mem_toAddSubmonoid]
+    rintro ⟨k, rfl⟩
     rw [Submodule.mem_span_range_iff_exists_fun]
     exact ⟨k, matrixEuclideanBasis_sum_eq A k⟩
   · intro hy
@@ -2131,7 +2150,8 @@ private lemma matrixIntegerLattice_finite_inter_isBounded
     integerLattice_finite_inter_isBounded hs_pre
   refine Set.Finite.subset (hfinite_pre.image e) ?_
   rintro y ⟨hyS, hyL⟩
-  simp [matrixIntegerLattice, L, ← heq] at hyL
+  simp only [matrixIntegerLattice, L, ← heq, AddSubgroup.mem_map,
+    LinearMap.toAddMonoidHom_coe, SetLike.mem_coe] at hyL
   rcases hyL with ⟨z, hz, rfl⟩
   exact ⟨z, ⟨⟨e z, hyS, by simp⟩, hz⟩, by simp⟩
 
@@ -2149,7 +2169,7 @@ private lemma lattice_nearest_minimizer {n : Nat}
   have hSnonempty : S.Nonempty := by
     refine ⟨0, ?_⟩
     constructor
-    · simpa [Metric.mem_closedBall, dist_eq_norm] using le_rfl
+    · simp [Metric.mem_closedBall, dist_eq_norm]
     · exact Λ.carrier.zero_mem
   let F := hSfinite.toFinset
   have hFnonempty : F.Nonempty := by
@@ -2699,7 +2719,10 @@ private lemma complex_exp_sub_one_sq_div_tendsto
   refine (hlim.congr' ?_).trans ?_
   · filter_upwards [self_mem_nhdsWithin] with t ht
     have ht' : t ≠ 0 := by simpa using ht
-    simp [f, c, slope_def_module, div_eq_mul_inv, mul_comm, mul_left_comm, mul_assoc, sq]
+    simp only [mul_comm, mul_left_comm, slope_def_module, sub_zero, Complex.ofReal_zero,
+      zero_mul, mul_zero, Complex.exp_zero, Complex.real_smul, Complex.ofReal_inv,
+      Complex.norm_mul, norm_inv, Complex.norm_real, Real.norm_eq_abs, sq,
+      Complex.ofReal_mul, mul_assoc, div_eq_mul_inv, mul_inv_rev, f, c]
     have hsq : |t| ^ 2 = t ^ 2 := by rw [sq_abs]
     field_simp [ht', abs_ne_zero.mpr ht']
     rw [hsq]
@@ -3586,7 +3609,7 @@ private lemma unitAddTorus_lipschitz_physicalDirection_hilbertBasis_integral_sq_
       rw [map_sub]
       rfl
     have hbase : (coordinateTorusAddEquivUnitAddTorus n).symm (e x) = x := by
-      simpa [e] using e.symm_apply_apply x
+      simp [e]
     rw [htranslate, hbase]
     rw [hcoord]
     rw [← Complex.ofReal_sub]
@@ -4519,7 +4542,9 @@ private lemma flatTorus_matrix_preimage_closedBall_image_eq_univ_of_coveringRadi
       rw [← hγdist]
       exact (distanceToLattice_le_coveringRadius Λ y).trans hs
     change γ ∈ matrixIntegerLattice n Λ.basis at hγ
-    simp [matrixIntegerLattice, integerLattice] at hγ
+    simp only [matrixIntegerLattice, integerLattice, AddSubgroup.mem_map,
+      AddSubgroup.mem_mk, AddSubmonoid.mem_mk, AddSubsemigroup.mem_mk,
+      Set.mem_setOf_eq, LinearMap.toAddMonoidHom_coe, existsAndEq, true_and] at hγ
     rcases hγ with ⟨k, rfl⟩
     let u : RealEuclideanSpace n := x - integerVector n k
     refine ⟨u, ?_, ?_⟩
@@ -4706,7 +4731,7 @@ private lemma EuclideanUnitBallVolume_sq_mul_scaled_radius_pow_le
     have hpow : A ^ 2 = a ^ (n : Real) := by
       dsimp [A]
       rw [← Real.rpow_natCast, ← Real.rpow_mul ha_nonneg]
-      ring
+      ring_nf
     have ha_eq : a = 2 * Real.pi / (n : Real) := by
       dsimp [a, b]
       field_simp [ne_of_gt hnpos]
@@ -4733,7 +4758,7 @@ private lemma EuclideanUnitBallVolume_sq_mul_scaled_radius_pow_le
           exact mul_le_mul_of_nonneg_right hV_bound (by positivity)
     _ = (1 / 8 : Real) ^ n := by
           have hexp : Real.exp (n : Real) = Real.exp 1 ^ n := by
-            simpa [mul_comm] using (Real.exp_nat_mul 1 n)
+            simp
           have hbase :
               Real.exp 1 * (2 * Real.pi / (n : Real)) *
                   ((n : Real) / (16 * Real.pi * Real.exp 1)) = (1 / 8 : Real) := by
@@ -6350,7 +6375,7 @@ private lemma constructionAKernelBasisMatrix_repr_integerVector
   let bN := constructionAKernelIntBasis q s n H
   let zN : N := ⟨z, (mem_constructionAKernelIntSubmodule_iff q s n H z).2 hz⟩
   have hsum : (∑ j : Fin n, bN.repr zN j • bN j : N) = zN := by
-    simpa [bN] using (bN.sum_repr zN)
+    exact bN.sum_repr zN
   calc
     Matrix.toEuclideanLin (constructionAKernelBasisMatrix q s n H)
         (integerVector n (fun j => (constructionAKernelIntBasis q s n H).repr
@@ -6406,8 +6431,10 @@ private lemma constructionAKernel_lattice_carrier_eq
   ext x
   constructor
   · intro hx
-    simp [KNFullRankLattice.carrier, matrixIntegerLattice, integerLattice,
-      constructionAKernelLatticeBasis] at hx
+    simp only [KNFullRankLattice.carrier, matrixIntegerLattice,
+      constructionAKernelLatticeBasis, integerLattice, AddSubgroup.mem_map,
+      AddSubgroup.mem_mk, AddSubmonoid.mem_mk, AddSubsemigroup.mem_mk,
+      Set.mem_setOf_eq, LinearMap.toAddMonoidHom_coe, existsAndEq, true_and] at hx
     rcases hx with ⟨k, rfl⟩
     let zN : constructionAKernelIntSubmodule q s n H :=
       ∑ j : Fin n, k j • constructionAKernelIntBasis q s n H j
@@ -6416,8 +6443,10 @@ private lemma constructionAKernel_lattice_carrier_eq
     · exact (mem_constructionAKernelIntSubmodule_iff q s n H (zN : Fin n -> Int)).1
         zN.property
   · rintro ⟨z, rfl, hz⟩
-    simp [KNFullRankLattice.carrier, matrixIntegerLattice, integerLattice,
-      constructionAKernelLatticeBasis]
+    simp only [KNFullRankLattice.carrier, matrixIntegerLattice,
+      constructionAKernelLatticeBasis, integerLattice, AddSubgroup.mem_map,
+      AddSubgroup.mem_mk, AddSubmonoid.mem_mk, AddSubsemigroup.mem_mk,
+      Set.mem_setOf_eq, LinearMap.toAddMonoidHom_coe, existsAndEq, true_and]
     refine ⟨fun j =>
       (constructionAKernelIntBasis q s n H).repr
         ⟨z, (mem_constructionAKernelIntSubmodule_iff q s n H z).2 hz⟩ j, ?_⟩
@@ -7346,8 +7375,10 @@ private theorem missing_fixed_syndrome_card_bound
     simpa [Missing, T, Ω] using
       Fintype.card_subtype_le (fun H : Ω => MissingSyndrome q s n H y)
   have hNcard : Fintype.card Nonmissing = T - Fintype.card Missing := by
-    simpa [Nonmissing, Missing, T, Ω, fixedSyndromeNonmissing] using
+    have hcompl :=
       Fintype.card_subtype_compl (fun H : Ω => MissingSyndrome q s n H y)
+    dsimp [Nonmissing, Missing, T, Ω, fixedSyndromeNonmissing] at hcompl ⊢
+    exact hcompl
   have hMN : Fintype.card Missing + Fintype.card Nonmissing = T := by
     rw [hNcard, Nat.add_sub_of_le hMleT]
   let f : Nonmissing -> Nat := fun H =>
@@ -7984,11 +8015,12 @@ private lemma exists_constructionAKernel_lattice_bounds_of_zmod_good_matrix
 
 private lemma exists_of_card_bad_add_lt_total {α : Type*} [Fintype α]
     (P Q : α -> Prop) [Fintype {x : α // ¬ P x}] [Fintype {x : α // ¬ Q x}]
-    [Fintype {x : α // ¬ P x ∨ ¬ Q x}]
+    [Finite {x : α // ¬ P x ∨ ¬ Q x}]
     (hcard : Fintype.card {x : α // ¬ P x} + Fintype.card {x : α // ¬ Q x} <
       Fintype.card α) :
     ∃ x : α, P x ∧ Q x := by
   by_contra hnone
+  letI : Fintype {x : α // ¬ P x ∨ ¬ Q x} := Fintype.ofFinite _
   have hcover : ∀ x : α, ¬ P x ∨ ¬ Q x := by
     intro x
     by_cases hP : P x
@@ -8013,7 +8045,7 @@ private lemma exists_constructionAGoodMatrix_of_bad_card_lt
       ¬ ConstructionAShortKernelGood q s n H}]
     [Fintype {H : Matrix (Fin s) (Fin n) (ZMod q) //
       ¬ ConstructionASyndromeCovering q s n H}]
-    [Fintype {H : Matrix (Fin s) (Fin n) (ZMod q) //
+    [Finite {H : Matrix (Fin s) (Fin n) (ZMod q) //
       ¬ ConstructionAShortKernelGood q s n H ∨ ¬ ConstructionASyndromeCovering q s n H}]
     (hcard :
       Fintype.card {H : Matrix (Fin s) (Fin n) (ZMod q) //
@@ -8034,7 +8066,7 @@ private lemma exists_primeSquare_lattice_bounds_of_bad_card_lt
       ¬ ConstructionAShortKernelGood q s (q * q) H}]
     [Fintype {H : Matrix (Fin s) (Fin (q * q)) (ZMod q) //
       ¬ ConstructionASyndromeCovering q s (q * q) H}]
-    [Fintype {H : Matrix (Fin s) (Fin (q * q)) (ZMod q) //
+    [Finite {H : Matrix (Fin s) (Fin (q * q)) (ZMod q) //
       ¬ ConstructionAShortKernelGood q s (q * q) H ∨
         ¬ ConstructionASyndromeCovering q s (q * q) H}]
     (hcard :
@@ -8056,7 +8088,7 @@ private lemma exists_constructionAZModGoodMatrix_of_bad_card_lt
       ¬ ConstructionAShortKernelGood q s n H}]
     [Fintype {H : Matrix (Fin s) (Fin n) (ZMod q) //
       ¬ ConstructionAZModSyndromeCovering q s n H}]
-    [Fintype {H : Matrix (Fin s) (Fin n) (ZMod q) //
+    [Finite {H : Matrix (Fin s) (Fin n) (ZMod q) //
       ¬ ConstructionAShortKernelGood q s n H ∨
         ¬ ConstructionAZModSyndromeCovering q s n H}]
     (hcard :
@@ -8079,7 +8111,7 @@ private lemma exists_primeSquare_lattice_bounds_of_zmod_bad_card_lt
       ¬ ConstructionAShortKernelGood q s (q * q) H}]
     [Fintype {H : Matrix (Fin s) (Fin (q * q)) (ZMod q) //
       ¬ ConstructionAZModSyndromeCovering q s (q * q) H}]
-    [Fintype {H : Matrix (Fin s) (Fin (q * q)) (ZMod q) //
+    [Finite {H : Matrix (Fin s) (Fin (q * q)) (ZMod q) //
       ¬ ConstructionAShortKernelGood q s (q * q) H ∨
         ¬ ConstructionAZModSyndromeCovering q s (q * q) H}]
     (hcard :

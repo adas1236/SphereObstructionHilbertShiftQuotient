@@ -66,11 +66,13 @@ private lemma gaussianIntegerPoint_mem_standardIntegerLattice
   rw [Submodule.mem_span_range_iff_exists_fun]
   refine ⟨k, ?_⟩
   ext i
-  simp [gaussianIntegerPoint, gaussianEuclideanStdBasis]
+  simp only [gaussianIntegerPoint, gaussianEuclideanStdBasis, ← PiLp.basisFun_eq_pi_basisFun,
+    PiLp.basisFun_apply, WithLp.ofLp_sum, WithLp.ofLp_smul, zsmul_eq_mul,
+    Finset.sum_apply, Pi.mul_apply, Pi.intCast_apply]
   rw [Finset.sum_eq_single i]
   · simp
   · intro j _ hj
-    rw [Pi.single_eq_of_ne]
+    rw [PiLp.single_eq_of_ne]
     · simp
     · exact fun h => hj h.symm
   · intro hi
@@ -91,11 +93,13 @@ private lemma gaussianIntegerAddSubgroup_eq_standardIntegerLattice
     refine ⟨k, ?_⟩
     rw [← hk]
     ext i
-    simp [gaussianIntegerPoint, gaussianEuclideanStdBasis]
+    simp only [gaussianIntegerPoint, gaussianEuclideanStdBasis,
+      ← PiLp.basisFun_eq_pi_basisFun, PiLp.basisFun_apply, WithLp.ofLp_sum,
+      WithLp.ofLp_smul, zsmul_eq_mul, Finset.sum_apply, Pi.mul_apply, Pi.intCast_apply]
     rw [Finset.sum_eq_single i]
     · simp
     · intro j _ hj
-      rw [Pi.single_eq_of_ne]
+      rw [PiLp.single_eq_of_ne]
       · simp
       · exact fun h => hj h.symm
     · intro hi
@@ -371,7 +375,7 @@ private lemma matrixNormSq_smul
     matrixNormSq n A (a • x) = a ^ 2 * matrixNormSq n A x := by
   rw [matrixNormSq, matrixNormSq, map_smul, norm_smul]
   rw [mul_pow]
-  rw [show ‖a‖ ^ 2 = a ^ 2 by simpa [Real.norm_eq_abs] using sq_abs a]
+  rw [show ‖a‖ ^ 2 = a ^ 2 by simp [Real.norm_eq_abs]]
 
 private lemma matrixNormSq_sub_add_half
     (n : Nat) (A : LatticeBasis n) (z d : RealEuclideanSpace n) :
@@ -542,7 +546,7 @@ private lemma gaussianRawFunction_translate_center
   congr 1
   have hpoint := gaussianIntegerPoint_sub n k a
   rw [hpoint]
-  abel
+  abel_nf
 
 private noncomputable def gaussianRawL2Vector
     (n : Nat) (A : LatticeBasis n) (R : Real) (u : RealEuclideanSpace n)
@@ -1541,7 +1545,8 @@ private lemma flatTorusMetric_dist_le_out_matrixNorm
           flatTorus n A)
           = (QuotientAddGroup.mk' _ (Quotient.out y : RealEuclideanSpace n) :
               flatTorus n A) := by
-              simp [flatTorus, gaussianIntegerPoint]
+              simp only [QuotientAddGroup.mk'_apply, QuotientAddGroup.mk_add,
+                Quotient.out_eq, add_eq_left, QuotientAddGroup.eq_zero_iff]
               exact ⟨a, rfl⟩
       _ = y := Quotient.out_eq y
   have hdist := flatTorusMetric_dist_mk_le_matrixNorm n A
@@ -1564,6 +1569,8 @@ private lemma flatTorusMetric_dist_sq_le_out_matrixNormSq
     exact h)
 
 set_option maxHeartbeats 800000 in
+-- This compactness argument combines quotient representatives, closure of the integer subgroup,
+-- and norm comparison estimates; the default heartbeat budget is too small for the final search.
 private lemma exists_out_matrixNorm_lt_flatTorusMetric_dist_add
     (n : Nat) (A : LatticeBasis n) (x y : flatTorus n A) {η : Real} (hη : 0 < η) :
     (letI : PseudoMetricSpace (flatTorus n A) := flatTorusMetric n A;
@@ -1599,7 +1606,7 @@ private lemma exists_out_matrixNorm_lt_flatTorusMetric_dist_add
     rfl
   obtain ⟨s, hs, hslt⟩ := QuotientAddGroup.exists_norm_add_lt
     (gaussianIntegerAddSubgroup n) (u - v) hη
-  simp [gaussianIntegerAddSubgroup] at hs
+  simp only [gaussianIntegerAddSubgroup, AddSubgroup.mem_mk] at hs
   rcases hs with ⟨k, rfl⟩
   refine ⟨-k, ?_⟩
   rw [hdist]
@@ -1643,7 +1650,7 @@ private lemma flatTorusMetric_eq_of_dist_eq_zero
       exact lt_of_mul_lt_mul_left hc_mul_lt hc.le
     rw [dist_eq_norm]
     convert hnorm_lt using 1
-    abel
+    abel_nf
   have hmem : u - v ∈ gaussianIntegerAddSubgroup n := by
     simpa [(gaussianIntegerAddSubgroup_isClosed_default n).closure_eq] using hclosure
   rcases hmem with ⟨a, ha⟩
@@ -1652,9 +1659,10 @@ private lemma flatTorusMetric_eq_of_dist_eq_zero
   rw [← hx, ← hy]
   have huv : u = v + gaussianIntegerPoint n a := by
     rw [← ha]
-    abel
+    abel_nf
   rw [huv]
-  simp [flatTorus, gaussianIntegerPoint]
+  simp only [flatTorus, gaussianIntegerPoint, QuotientAddGroup.mk'_apply,
+    QuotientAddGroup.mk_add, add_eq_left, QuotientAddGroup.eq_zero_iff]
   exact ⟨a, rfl⟩
 
 private noncomputable def gaussianFiniteSubsetMap
@@ -1786,12 +1794,12 @@ private lemma gaussian_chordal_sq_lower_bound
   have ht_eq : 2 * t = d ^ 2 / (2 * R ^ 2) := by
     dsimp [t]
     field_simp [show (4 * R ^ 2) ≠ 0 by positivity, show (2 * R ^ 2) ≠ 0 by positivity]
-    ring
+    ring_nf
   have hrewrite :
       2 - 2 * Real.exp (-(d ^ 2) / (4 * R ^ 2)) * (1 + C / R ^ 4) =
         2 * (1 - Real.exp (-t)) - 2 * delta * Real.exp (-t) := by
     dsimp [t, delta]
-    ring
+    ring_nf
   rw [hrewrite]
   calc
     (1 - 2 * beta) * d ^ 2 / (2 * R ^ 2)
@@ -1848,7 +1856,7 @@ private lemma gaussian_chordal_sq_upper_bound
           (1 - C / R ^ 4) =
         2 * (1 - Real.exp (-t)) + 2 * delta * Real.exp (-t) := by
     dsimp [t, delta]
-    ring
+    ring_nf
   rw [hrewrite]
   calc
     2 * (1 - Real.exp (-t)) + 2 * delta * Real.exp (-t)

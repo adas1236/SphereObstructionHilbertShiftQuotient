@@ -169,7 +169,7 @@ private instance piIntegerPointAddAction (n : Nat) :
     intro q r x
     change piIntegerPoint n (q + r) + x = piIntegerPoint n q + (piIntegerPoint n r + x)
     funext i
-    simp [piIntegerPoint, add_comm, add_left_comm, add_assoc]
+    simp [piIntegerPoint, add_comm, add_left_comm]
 
 private instance piIntegerPointMeasurableConstVAdd (n : Nat) :
     MeasurableConstVAdd (Fin n -> Int) (Fin n -> Real) where
@@ -395,11 +395,13 @@ private lemma summationIntegerPoint_mem_standardIntegerLattice
   rw [Submodule.mem_span_range_iff_exists_fun]
   refine ⟨k, ?_⟩
   ext i
-  simp [summationIntegerPoint, euclideanStdBasis]
+  simp only [summationIntegerPoint, euclideanStdBasis, ← PiLp.basisFun_eq_pi_basisFun,
+    PiLp.basisFun_apply, WithLp.ofLp_sum, WithLp.ofLp_smul, zsmul_eq_mul,
+    Finset.sum_apply, Pi.mul_apply, Pi.intCast_apply]
   rw [Finset.sum_eq_single i]
   · simp
   · intro j _ hj
-    rw [Pi.single_eq_of_ne]
+    rw [PiLp.single_eq_of_ne]
     · simp
     · exact fun h => hj h.symm
   · intro hi
@@ -632,7 +634,7 @@ private lemma complexPeriodizedSummand_summable
             ‖(complexSchwartz n G)
               ((R⁻¹ : Real) • ((x : RealEuclideanSpace n) +
                 summationIntegerPoint n k - c))‖ := by
-          simp [norm_mul]
+          simp
     _ ≤ ‖((R ^ n)⁻¹ : ℂ)‖ *
         (C / ‖(R⁻¹ : Real) • ((x : RealEuclideanSpace n) +
           summationIntegerPoint n k - c)‖ ^ M) := by
@@ -675,7 +677,7 @@ private lemma complexPeriodizedSummand_summable
 
 private noncomputable def complexPeriodizedMap
     (n : Nat) (G : SchwartzMap (RealEuclideanSpace n) Real)
-    {R : Real} (hR : 0 < R) (c : RealEuclideanSpace n) :
+    {R : Real} (_hR : 0 < R) (c : RealEuclideanSpace n) :
     C(RealEuclideanSpace n, ℂ) :=
   ∑' k : Fin n -> Int, complexPeriodizedSummand n G R c k
 
@@ -767,8 +769,12 @@ private lemma mFourier_torusMk_eq_exp
     UnitAddTorus.mFourier (-m) (torusMk n y) =
       Complex.exp (((-2 * Real.pi * inner ℝ y (summationIntegerPoint n m) : Real) : ℂ) *
         Complex.I) := by
-  simp [UnitAddTorus.mFourier, torusMk, summationIntegerPoint, PiLp.inner_apply,
-    Finset.mul_sum, Finset.sum_mul]
+  simp only [UnitAddTorus.mFourier, Pi.neg_apply, fourier_apply, neg_smul, fourier_neg',
+    ContinuousMap.coe_mk, torusMk, fourier_coe_apply', Complex.ofReal_one, div_one,
+    neg_mul, summationIntegerPoint, PiLp.inner_apply, RCLike.inner_apply,
+    Real.ringHom_apply, Finset.mul_sum, Finset.sum_neg_distrib, Complex.ofReal_neg,
+    Complex.ofReal_sum, Complex.ofReal_mul, Complex.ofReal_ofNat, Complex.ofReal_intCast,
+    Finset.sum_mul]
   rw [← map_prod]
   simp_rw [← Complex.exp_sum]
   rw [← Complex.exp_conj]
@@ -872,7 +878,7 @@ private lemma pi_fourier_integrand_integrable
       ‖piMFourier n (-m) y *
           (complexSchwartz n G) ((R⁻¹ : Real) • WithLp.toLp 2 y)‖
           = ‖(complexSchwartz n G) ((R⁻¹ : Real) • WithLp.toLp 2 y)‖ := by
-            simp [piMFourier, norm_mul]
+            simp [piMFourier]
       _ ≤ ‖(complexSchwartz n G) ((R⁻¹ : Real) • WithLp.toLp 2 y)‖ := le_rfl
 
 private lemma pi_integral_tsum_vadd_eq_integral
@@ -898,7 +904,8 @@ private lemma pi_integral_tsum_vadd_eq_integral
   · intro k
     exact (hH.1.comp_quasiMeasurePreserving
       (MeasureTheory.measurePreserving_vadd k
-        (MeasureTheory.volume : MeasureTheory.Measure (Fin n -> Real))).quasiMeasurePreserving).restrict
+        (MeasureTheory.volume : MeasureTheory.Measure (Fin n -> Real))).quasiMeasurePreserving
+      ).restrict
   · change (∑' i : Fin n -> Int,
       (∫⁻ (a : Fin n -> Real) in piUnitCube n, ‖H (i +ᵥ a)‖ₑ)) ≠ ∞
     rw [← (piUnitCube_fundamentalDomain n).lintegral_eq_tsum'' (fun y => ‖H y‖ₑ)]
@@ -1139,7 +1146,7 @@ private lemma periodizedTorus_mFourierCoeff_summable
       hM hC hR using 1
     ext k
     rw [periodizedTorus_fourierCoeff n G hRpos c k.1]
-    simp [norm_mul]
+    simp
   have htail : Summable fun k : {k : Fin n -> Int // k ≠ 0} =>
       UnitAddTorus.mFourierCoeff (periodizedTorus n G hRpos c) k.1 :=
     Summable.of_norm htailNorm
@@ -1216,7 +1223,8 @@ private lemma uniformSummationEstimate_zero
         MeasureTheory.Measure.dirac 0 by
       simpa [RealEuclideanSpace] using (volume_euclideanSpace_eq_dirac (ι := Fin 0))]
     simp]
-  simp [scaledLatticeSum]
+  simp only [scaledLatticeSum, pow_zero, inv_one, tsum_fintype, Finset.univ_unique,
+    Finset.sum_singleton, one_mul, zero_div, abs_nonpos_iff]
   exact sub_eq_zero.mpr (congrArg G (Subsingleton.elim _ _))
 
 private lemma poisson_tail_bound
@@ -1282,7 +1290,7 @@ private lemma poisson_tail_bound
     congr with k
     dsimp [coeff, f]
     rw [periodizedTorus_fourierCoeff n G hRpos c k.1]
-    simp [norm_mul]
+    simp
   have habs_eq :
       |scaledLatticeSum n G R c - euclideanIntegral n G| =
         ‖((scaledLatticeSum n G R c : ℂ) - (euclideanIntegral n G : ℂ))‖ := by
@@ -1333,7 +1341,7 @@ private lemma uniformSummationEstimate_of_fourier_tail_bound
 
 /-- A uniform Poisson-summation estimate for Schwartz functions. -/
 theorem uniformSummationEstimate
-    (n : Nat) (G : SchwartzMap (RealEuclideanSpace n) Real) (N : Nat) (hN : 1 <= N) :
+    (n : Nat) (G : SchwartzMap (RealEuclideanSpace n) Real) (N : Nat) (_hN : 1 <= N) :
     exists C : Real, 0 <= C /\
       forall R : Real, 1 <= R -> forall c : RealEuclideanSpace n,
         |scaledLatticeSum n G R c - euclideanIntegral n G| <= C / R ^ N := by
