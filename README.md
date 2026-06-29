@@ -2,7 +2,7 @@
 
 This repository contains a Lean 4 formalization of an obstruction to Hilbert embeddability for a quotient of the Hilbert sphere by the bilateral shift.
 
-Let $H = \ell_2(\mathbb{Z})$ and let $S$ be the bilateral shift. The main result proves that the quotient $\mathbb{S}(\ell_2(\mathbb{Z}))/ \langle S \rangle$, equipped with the chordal quotient metric, has infinite Hilbert distortion. The formalization also proves the corresponding statement for the angular quotient metric and records the finite-profile consequence: the quotient contains finite subsets with arbitrarily large Hilbert distortion.
+Let $H = \ell_2(\mathbb{Z})$, let $S(H)$ be the corresponding unit sphere and let $T$ be the bilateral shift. The main result proves that the quotient $S(H)/ \langle T \rangle$, equipped with the chordal quotient metric, has infinite Hilbert distortion. The formalization also proves the corresponding statement for the angular quotient metric and records the finite-profile consequence: the quotient contains finite subsets with arbitrarily large Hilbert distortion.
 
 The proof follows the blueprint in `blueprint/`: finite pieces of hard flat tori are embedded, after rescaling and controlled error, into higher-rank sphere quotients and then coded into the one-dimensional shift quotient.
 
