@@ -306,6 +306,12 @@ private lemma shiftChordalHilbertDistortion_lt_top_of_angular_lt_top
                 rw [mul_assoc]
   exact lt_of_le_of_lt hdist_le_bound hboundTop
 
+/-- The shift sphere quotient has infinite Hilbert distortion for the chordal metric. -/
+theorem shiftSphereQuotientChordalHilbertDistortion_eq_top :
+    (letI : PseudoMetricSpace shiftSphereQuotient := shiftChordalMetric;
+      hilbertDistortion shiftSphereQuotient = ⊤) := by
+  exact shiftChordalHilbertDistortion_eq_top
+
 /-- The shift sphere quotient has infinite Hilbert distortion for chordal and angular metrics. -/
 theorem shiftSphereQuotientInfiniteHilbertDistortion :
     (letI : PseudoMetricSpace shiftSphereQuotient := shiftChordalMetric;

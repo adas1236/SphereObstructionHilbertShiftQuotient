@@ -687,7 +687,9 @@ private theorem flatTorus_haar_difference_dist_sq {n : Nat}
 
 section UnitAddTorusFourierHelpers
 
-local instance : MeasureSpace UnitAddCircle := ⟨AddCircle.haarAddCircle⟩
+/-- The Haar measure is used as the local volume measure on `UnitAddCircle`. -/
+local instance unitAddCircleMeasureSpaceFourier : MeasureSpace UnitAddCircle :=
+  ⟨AddCircle.haarAddCircle⟩
 local instance : MeasureTheory.Measure.IsAddHaarMeasure (volume : Measure UnitAddCircle) :=
   inferInstanceAs (MeasureTheory.Measure.IsAddHaarMeasure AddCircle.haarAddCircle)
 local instance : MeasureTheory.IsProbabilityMeasure (volume : Measure UnitAddCircle) :=
@@ -1042,7 +1044,9 @@ private lemma continuous_coordinateTorusAddEquivUnitAddTorus_flatTorusAmbient
 
 section CoordinateTorusMeasure
 
-local instance : MeasureSpace UnitAddCircle := ⟨AddCircle.haarAddCircle⟩
+/-- The Haar measure is used as the local volume measure on `UnitAddCircle`. -/
+local instance unitAddCircleMeasureSpaceCoordinates : MeasureSpace UnitAddCircle :=
+  ⟨AddCircle.haarAddCircle⟩
 local instance : MeasureTheory.Measure.IsAddHaarMeasure (volume : Measure UnitAddCircle) :=
   inferInstanceAs (MeasureTheory.Measure.IsAddHaarMeasure AddCircle.haarAddCircle)
 local instance : MeasureTheory.IsProbabilityMeasure (volume : Measure UnitAddCircle) :=
