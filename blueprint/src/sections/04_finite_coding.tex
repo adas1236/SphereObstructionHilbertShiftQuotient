@@ -19,7 +19,7 @@ This is a group homomorphism $\Z^n\to\Z$, so for all $k,l\in\Z^n$,
 
 \begin{lemma}[Injectivity on a difference box]
 \label{lem:mixed-radix-injective}
-\lean{SphereObstructionHilbertShiftQuotient.mixedRadixInjectiveOnDifferenceBox}\notready
+\lean{SphereObstructionHilbertShiftQuotient.mixedRadixInjectiveOnDifferenceBox}\leanok
 \uses{def:mixed-radix-map}
 Let $B\subset\Z^n$ be a finite rectangular box, put $D=B-B$, and suppose
 $D\subset[-L,L]^n$.  If $M>2L+1$, then the mixed-radix map $\phi$ is injective
@@ -35,7 +35,7 @@ $k-k'\in D$ and $\phi(k-k')=0=\phi(0)$, so $k=k'$.
 \end{proof}
 
 \begin{lemma}[Exact finite-support coding]\label{lem:coding-preserves-correlations}
-\lean{SphereObstructionHilbertShiftQuotient.codingPreservesCorrelations}\notready
+\lean{SphereObstructionHilbertShiftQuotient.codingPreservesCorrelations}\leanok
 \uses{def:higher-rank-sphere-quotient, lem:sphere-correlation, lem:mixed-radix-injective}
 Assume $n\ge1$.  Let
 $f_1,\dots,f_N\in\Sphere(\ell^2(\Z^n))$ be finitely supported unit vectors,
@@ -89,7 +89,7 @@ gives the distance identity.
 
 \begin{lemma}[Stability under changing representatives]
 \label{lem:quotient-lipschitz-representatives}
-\lean{SphereObstructionHilbertShiftQuotient.quotientDistanceLipschitzRepresentatives}\notready
+\lean{SphereObstructionHilbertShiftQuotient.quotientDistanceLipschitzRepresentatives}\leanok
 \uses{def:higher-rank-sphere-quotient}
 For unit vectors $x_i,x_j,x_i',x_j'\in H_n$,
 \begin{equation}\label{eq:quotient-lipschitz-representatives}
@@ -105,7 +105,7 @@ and then take infima.
 
 \begin{lemma}[Finite-support approximation in the quotient]
 \label{lem:finite-support-approximation}
-\lean{SphereObstructionHilbertShiftQuotient.finiteSupportApproximationInQuotient}\notready
+\lean{SphereObstructionHilbertShiftQuotient.finiteSupportApproximationInQuotient}\leanok
 \uses{lem:higher-rank-orbits-closed, lem:quotient-lipschitz-representatives}
 For every finite set $F\subset\Sigma_n$ and every $\eps>0$, there is a finite
 set represented by finitely supported unit vectors in $\Sphere(H_n)$ that is
@@ -127,7 +127,7 @@ $(1+\eps)$-bilipschitz equivalent to $F$.
 \end{proof}
 
 \begin{lemma}\label{lem:sigma-n-to-sigma-1}
-\lean{SphereObstructionHilbertShiftQuotient.higherRankFiniteSubsetEmbedsInShiftQuotient}\notready
+\lean{SphereObstructionHilbertShiftQuotient.higherRankFiniteSubsetEmbedsInShiftQuotient}\leanok
 \uses{lem:coding-preserves-correlations, lem:finite-support-approximation}
 For every finite set $F\subset\Sigma_n$ and every $\eps>0$, there is a finite
 set $F'\subset\Sigma_1$ that is $(1+\eps)$-bilipschitz equivalent to $F$.
